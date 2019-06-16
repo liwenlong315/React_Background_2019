@@ -4,14 +4,37 @@ import './login.less'
 import { Form, Icon, Input, Button} from 'antd';
 
 
-export default class Login extends React.Component{
+ class Login extends React.Component{
    
         handleSubmit = (event) => {
           event.preventDefault();
+          this.props.form.validateFields((err,values)=>{
+            if(!err){
+              console.log('登录Ajax请求',values)
+            }else{
+              console.log(err)
+            }
+          })
+            }
+            validatePwd = (rule,value,callback) =>{
+              value = value.trim()
+              if(!value){
+                callback('密码不能为空')
+              }else if(value.lenght<4){
+               callback('密码长度小于4位')
+              }else if(value.lenght>12) {
+                callback('密码长度大于12位')
+              }else if(!/^[a-zA-Z0-9]+$/.test(value)){
+                 callback('密码必须是英文、数字组成')
+              }else{
+                callback()
+              }
             }
     
     render(){
+      const{getFieldDecorator} = this.props.form;
         return(
+          
             <div className="login">
                 <header className="login-header">
                     <img src={logo} alt="logo"/>
@@ -22,18 +45,37 @@ export default class Login extends React.Component{
              <Form onSubmit={this.handleSubmit} className="login-form">
                  {/* 用户名 */}
         <Form.Item>
-            <Input
+          {
+            getFieldDecorator('username',{
+              rules:[{required:true,message:'用户名不能为空'},
+              {min:4,message:'用户名小于4位'},
+              {max:12,message:'用户名大于12位'},
+              {pattern:/^[a-zA-Z0-9_]+$/,message:'用户名必须是英文、数字、下划线组成'},
+            ]
+            })(
+              <Input
               prefix={<Icon type="user" style={{ color: 'rgba(0,0,0,.25)' }} />}
-              placeholder="U用户名"
+              placeholder="用户名"
             />
+            )
+          }
+            
         </Form.Item>
                 {/* 密码 */}
         <Form.Item>
-            <Input
+           {
+             getFieldDecorator('password',{
+               rules:[
+                 {validator:this.validatePwd}
+               ]
+             })(
+              <Input
               prefix={<Icon type="lock" style={{ color: 'rgba(0,0,0,.25)' }} />}
               type="password"
               placeholder="密码"
             />
+             )
+           }
         </Form.Item>
    {/* 登录按钮 */}
         <Form.Item>
@@ -49,4 +91,7 @@ export default class Login extends React.Component{
         )
     }
 }
+
+const WrapperLogin = Form.create()(Login)
+export default WrapperLogin
 
