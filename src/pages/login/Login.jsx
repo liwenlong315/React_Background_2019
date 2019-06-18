@@ -1,18 +1,40 @@
 import React from 'react'
-import logo from './images/logo.png'
+import logo from '../../assets/images/logo.png'
 import './login.less'
-import { Form, Icon, Input, Button} from 'antd';
+import { Form, Icon, Input, Button,message} from 'antd';
+import {Redirect} from 'react-router-dom'
+import {reqLogin} from '../../api'
+import memoryUtils from '../../utils/memoryUtils'
+import {saveUser} from '../../utils/storageUtils'
 
 
+/* 登录一级路由组件 */
  class Login extends React.Component{
    
         handleSubmit = (event) => {
+          //阻止默认行为
           event.preventDefault();
-          this.props.form.validateFields((err,values)=>{
-            if(!err){
-              console.log('登录Ajax请求',values)
-            }else{
-              console.log(err)
+          //统一表单验证
+          this.props.form.validateFields(async(err,values)=>{
+            //判断是否成功
+            if(!err){ //成功
+
+              // console.log('登录Ajax请求',values)
+              const {username,password} = values
+              const result = await reqLogin(username,password)
+              // {status: 0, data: user对象} | {status: 1, msg: 'xxx'}
+              //登陆成功
+              if(result.status === 0){
+                 //保存用户信息
+                 const user = result.data
+                 localStorage.setItem('USER-KEY',JSON.stringify(user))
+                 saveUser(user)   //保存local文件中
+                 memoryUtils.user = user //保存在内存中
+                 //跳转到admin界面
+                 this.props.history.replace('/')
+              }else{
+                message.error(result.msg,2)
+              }
             }
           })
             }
@@ -27,12 +49,18 @@ import { Form, Icon, Input, Button} from 'antd';
               }else if(!/^[a-zA-Z0-9]+$/.test(value)){
                  callback('密码必须是英文、数字组成')
               }else{
-                callback()
+                callback() //通过验证
               }
             }
     
     render(){
+    
       const{getFieldDecorator} = this.props.form;
+      //访问login界面，如果已经登录，自动转跳到admin
+      if(memoryUtils.user._id){
+        return <Redirect to = "/"/>
+      }
+        
         return(
           
             <div className="login">
@@ -47,6 +75,7 @@ import { Form, Icon, Input, Button} from 'antd';
         <Form.Item>
           {
             getFieldDecorator('username',{
+              initialValue:'',
               rules:[{required:true,message:'用户名不能为空'},
               {min:4,message:'用户名小于4位'},
               {max:12,message:'用户名大于12位'},
