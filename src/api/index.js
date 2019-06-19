@@ -1,8 +1,15 @@
-import ajax from "./ajax";
-import {message} from "antd";
 import jsonp from 'jsonp'
+import {message} from 'antd'
+import ajax from "./ajax"
+// const BASE = 'http://localhost:3001'本地地址
 const BASE = ''
 
+// 1. 登陆
+/*
+export function reqLogin(username, password) {
+  return ajax(BASE + '/login', {username, password}, 'POST')
+}
+*/
 export const reqLogin = (username, password) => ajax(BASE + '/login', {username, password}, 'POST')
 
 // 添加用户
@@ -15,9 +22,34 @@ export const reqCategorys = (parentId) => ajax(BASE + '/manage/category/list', {
 // 更新分类的名称
 export const reqUpdateCategory = ({categoryId, categoryName}) => ajax(BASE + '/manage/category/update', {categoryId, categoryName}, 'POST')
 
-// reqLogin('admin','admin').then(result =>{
-//   console.log('result',result)
-// })
+// 添加分类
+export const reqAddCategory = (categoryName, parentId) => ajax(BASE + '/manage/category/add', {categoryName, parentId}, 'POST')
+
+// 获取商品分页列表
+export const reqProducts = ({pageNum, pageSize}) => ajax(BASE + '/manage/product/list', {pageNum, pageSize})
+
+// 根据商品名称/描述搜索获取商品分页列表
+export const reqSearchProducts = ({
+  pageNum,
+  pageSize,
+  searchType, // 搜索类型 值为'productDesc' / 'productName'
+  searchName // 搜索的关键字
+}) => ajax(BASE + '/manage/product/search', {
+  pageNum,
+  pageSize,
+  [searchType]: searchName
+})
+
+// 对商品进行上架/下架处理
+export const reqUpdateStatus = (productId, status) => ajax(BASE + '/manage/product/updateStatus', {
+  productId,
+  status
+}, 'POST')
+
+// 简单测试一下
+/* reqLogin('admin', 'admin').then(result => {
+  console.log('result', result)
+}) */
 
 /* 
 发jsonp请求获取当前天气信息
