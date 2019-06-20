@@ -61,6 +61,7 @@ import { Modal } from 'antd';
             title:'确定退出？',
             okText:'确定',
             cancelText:'取消',
+            icon:'',
             onOk:() => {
              console.log('ok')
              //清除user数据 local和内存中的
