@@ -36,11 +36,11 @@ export default class Admin extends Component {
           <Content style={{ backgroundColor:'white', margin: 30 }}>
             {/* 内容页面 */}
             <Switch>
-              <Route path="/home" Component={Home} />
-              <Route path="/category" Component={Category} />
-              <Route path="/product" Component={Product} />
-              <Route path="/role" Component={Role} />
-              <Route path="/user" Component={User} />
+              <Route path="/home" component={Home} />
+              <Route path="/category" component={Category} />
+              <Route path="/product" component={Product} />
+              <Route path="/role" component={Role} />
+              <Route path="/user" component={User} />
               <Route path="/charts/bar" component={Bar} />
               <Route path="/charts/line" component={Line} />
               <Route path="/charts/pie" component={Pie} />
