@@ -5,25 +5,25 @@ import LeftNav from "../../components/left-nav";
 import AdminHeader from "../../components/header";
 
 import { Redirect, Route, Switch } from "react-router-dom";
-import memoryUtils from "../../utils/memoryUtils"
+import memoryUtils from "../../utils/memoryUtils";
 
 import Home from "../home/home";
 import Category from "../category/category";
-import Product from "../product/product";
 import Role from "../role/role";
 import User from "../user/user";
 import Bar from "../charts/bar";
 import Line from "../charts/line";
 import Pie from "../charts/pie";
+import Product from "../product/product";
 
 const { Footer, Sider, Content } = Layout;
 
 export default class Admin extends Component {
   render() {
-      const user = memoryUtils.user
-      if(!user._id){
-          return <Redirect to="/login"/>
-      }
+    const user = memoryUtils.user;
+    if (!user._id) {
+      return <Redirect to="/login" />;
+    }
     return (
       <Layout style={{ minHeight: "100%" }}>
         <Sider>
@@ -33,7 +33,7 @@ export default class Admin extends Component {
         <Layout>
           {/* 头部组件 */}
           <AdminHeader />
-          <Content style={{ backgroundColor:'white', margin: 30 }}>
+          <Content style={{ backgroundColor: "white", margin: 30 }}>
             {/* 内容页面 */}
             <Switch>
               <Route path="/home" component={Home} />
