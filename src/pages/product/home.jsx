@@ -19,7 +19,7 @@ export default class ProductHome extends Component {
   };
 
   /* 
-  1.初始化Table的所有列信息的数组
+  1.初始化Table的所有列信息的数组 注意：PAGE_SIZE的引用和写入
   */
   initColumns = () => {
     this.columns = [
@@ -149,11 +149,12 @@ export default class ProductHome extends Component {
         </Select>
         <Input
           placeholder="关键字"
-          style={{ margin: "0 15px", width: 150 }}
+          style={{ margin: "0 15px", width: 200 }}
           value={searchName}
           onChange={event => this.setState({ searchName: event.target.value })}
         />
         <Button type="primary" onClick={() => this.getProducts(1)}>
+          <Icon type="search" />
           搜索
         </Button>
       </span>
