@@ -1,4 +1,4 @@
-//修改与添加
+//修改与添加 图片的的上传与删除相关组件的功能实现，
 
 import React from "react";
 import PropTypes from "prop-types";
@@ -25,12 +25,6 @@ export default class PicturesWall extends React.Component {
     previewImage: "", // 大图的地址
     fileList: [
       // 所有已上传图片信息对象的数组
-      /* {
-        uid: '-1',
-        name: 'xxx.png',
-        status: 'done',
-        url: 'https://zos.alipayobjects.com/rmsportal/jkjgkEfvpUPVyRjUImniVslZfWPnJuuZ.png',
-      }, */
     ]
   };
 
