@@ -43,7 +43,7 @@ export default class User extends Component {
         title: "所属角色",
         dataIndex: "role_id",
         // render: (role_id) => this.state.roles.find(role => role._id===role_id).name // 每显示一个都需要遍历
-        render: role_id => this.rolesObj[role_id].name // 不需要遍历
+         render: role_id => this.rolesObj[role_id].name // 不需要遍历
       },
       {
         title: "操作",

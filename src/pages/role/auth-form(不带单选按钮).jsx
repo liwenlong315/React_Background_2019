@@ -1,75 +1,74 @@
 //设置权限的添加分类列表
 
-import React, { PureComponent } from "react";
+import React, { Component } from "react";
 import PropTypes from "prop-types";
 import { Form, Input, Tree } from "antd";
-import menuList from "../../config/menuConfig";
 
-const Item = Form.Item;
+import menuList from "../../config/menuConfig";
 
 const { TreeNode } = Tree;
 
-/*
-添加分类的form组件
- */
-export default class AuthForm extends PureComponent {
+const Item = Form.Item;
+
+export default class AuthForm extends Component {
   static propTypes = {
     role: PropTypes.object
   };
 
   constructor(props) {
     super(props);
-
-    // 根据传入角色的menus生成初始状态
-    const { menus } = this.props.role;
+    // 读取当前角色的权限
+    const menus = this.props.role.menus;
+    // 初始化状态
     this.state = {
       checkedKeys: menus
     };
   }
 
-  /*
-  为父组件提交获取最新menus数据的方法
-   */
+  /* 
+  获取当前选中所有key的数组
+  */
   getMenus = () => this.state.checkedKeys;
 
-  getTreeNodes = menuList => {
+  initTreeNodes = menuList => {
     return menuList.reduce((pre, item) => {
+      // 添加一个<TreeNode>
       pre.push(
         <TreeNode title={item.title} key={item.key}>
-          {item.children ? this.getTreeNodes(item.children) : null}
+          {item.children ? this.initTreeNodes(item.children) : null}
         </TreeNode>
       );
       return pre;
     }, []);
   };
 
-  // 选中某个node时的回调
+  // 点击勾选框的回调
   onCheck = checkedKeys => {
-    console.log("onCheck", checkedKeys);
-    this.setState({ checkedKeys });
+    this.setState({
+      checkedKeys
+    });
   };
 
   componentWillMount() {
-    this.treeNodes = this.getTreeNodes(menuList);
+    this.treeNodes = this.initTreeNodes(menuList);
   }
 
-  // 根据新传入的role来更新checkedKeys状态
-  /*
-  当组件接收到新的属性时自动调用
-   */
+  /* 
+  当接收到新的属性时自动调用(初始化不会执行)
+  当前组件将要更新
+  */
   componentWillReceiveProps(nextProps) {
-    console.log("componentWillReceiveProps()", nextProps);
     const menus = nextProps.role.menus;
+    // 更新状态
     this.setState({
       checkedKeys: menus
     });
-    // this.state.checkedKeys = menus
   }
 
   render() {
-    console.log("AuthForm render()");
-    const { role } = this.props;
     const { checkedKeys } = this.state;
+    const { role } = this.props;
+
     // 指定Item布局的配置对象
     const formItemLayout = {
       labelCol: { span: 4 }, // 左侧label的宽度
@@ -84,7 +83,7 @@ export default class AuthForm extends PureComponent {
 
         <Tree
           checkable
-          defaultExpandAll={true}
+          defaultExpandAll
           checkedKeys={checkedKeys}
           onCheck={this.onCheck}
         >

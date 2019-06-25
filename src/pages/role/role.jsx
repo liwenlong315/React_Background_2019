@@ -46,12 +46,6 @@ export default class Role extends Component {
       {
         title: "授权人",
         dataIndex: "auth_name"
-      },
-      {
-        title: "操作",
-        render: role => (
-          <LinkButton onClick={() => this.showAuth(role)}>设置权限</LinkButton>
-        )
       }
     ];
   };
@@ -74,6 +68,7 @@ export default class Role extends Component {
     // 进行表单验证, 只能通过了才向下处理
     this.form.validateFields(async (error, values) => {
       if (!error) {
+        //隐藏确认框
         this.setState({
           isShowAdd: false
         });
@@ -124,6 +119,13 @@ export default class Role extends Component {
       this.getRoles();
     }
   };
+  onRow = role => {
+    return {
+      onClick: event => {
+        this.setState({ role });
+      }
+    };
+  };
 
   componentWillMount() {
     this.initColumn();
@@ -138,9 +140,22 @@ export default class Role extends Component {
     const role = this.role || {};
 
     const title = (
-      <Button type="primary" onClick={() => this.setState({ isShowAdd: true })}>
-        创建角色
-      </Button>
+      <span>
+        <Button
+          type="primary"
+          onClick={() => this.setState({ isShowAdd: true })}
+        >
+          创建角色
+        </Button>{" "}
+        &nbsp;&nbsp;
+        <Button
+          type="primary"
+          disabled={!role._id}
+          onClick={() => this.setState({ isShowAuth: true })}
+        >
+          设置角色权限
+        </Button>
+      </span>
     );
 
     return (
@@ -151,6 +166,18 @@ export default class Role extends Component {
           dataSource={roles}
           columns={this.columns}
           pagination={{ defaultPageSize: PAGE_SIZE }}
+          rowSelection={{
+            //单选按钮
+            type: "radio",
+            selectedRowKeys: [role._id],
+            onSelect: role => {
+              // 选择某个radio时回调
+              this.setState({
+                role
+              });
+            }
+          }}
+          onRow={this.onRow}
         />
 
         <Modal
@@ -173,7 +200,7 @@ export default class Role extends Component {
             this.setState({ isShowAuth: false });
           }}
         >
-          <AuthForm ref={this.authRef} role={role} />
+          <AuthForm ref={this.auth} role={role} />
         </Modal>
       </Card>
     );
